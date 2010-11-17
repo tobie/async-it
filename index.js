@@ -1,6 +1,8 @@
+var _slice = Array.prototype.slice;
+
 exports.forEach = forEach;
-function forEach(array, iterator, context, callback) {
-  var counter = array.length,
+function forEach(iterable, iterator, context, callback) {
+  var counter = iterable.length,
       notified = false;
   
   function cont(err) {
@@ -12,7 +14,7 @@ function forEach(array, iterator, context, callback) {
       notified = true;
       callback(err);
     } else if (counter == 0) {
-      callback(null, array);
+      callback(null, iterable);
     }
   }
   
@@ -22,19 +24,21 @@ function forEach(array, iterator, context, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
-      callback(null, array);
+    if (!iterable.length) {
+      callback(null, iterable);
     } else {
-      array.forEach(function(item) {
-        iterator.call(context, item, cont);
-      });
+      for (var i = 0, len = iterable.length; i < len; i++) {
+        if (i in iterable) {
+          iterator.call(context, iterable[i], cont);
+        }
+      }
     }
   });
 }
 
 exports.forEachWithIndex = forEachWithIndex;
-function forEachWithIndex(array, iterator, context, callback) {
-  var counter = array.length,
+function forEachWithIndex(iterable, iterator, context, callback) {
+  var counter = iterable.length,
       notified = false;
   
   function cont(err) {
@@ -46,7 +50,7 @@ function forEachWithIndex(array, iterator, context, callback) {
       notified = true;
       callback(err);
     } else if (counter == 0) {
-      callback(null, array);
+      callback(null, iterable);
     }
   }
   
@@ -56,19 +60,21 @@ function forEachWithIndex(array, iterator, context, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
-      callback(null, array);
+    if (!iterable.length) {
+      callback(null, iterable);
     } else {
-      array.forEach(function(item, i) {
-        iterator.call(context, item, i, cont);
-      });
+      for (var i = 0, len = iterable.length; i < len; i++) {
+        if (i in iterable) {
+          iterator.call(context, iterable[i], i, cont);
+        }
+      }
     }
   });
 }
 
 exports.map = map;
-function map(array, iterator, context, callback) {
-  var counter = array.length,
+function map(iterable, iterator, context, callback) {
+  var counter = iterable.length,
       notified = false,
       output = [];
   
@@ -78,34 +84,38 @@ function map(array, iterator, context, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
+    if (!iterable.length) {
       callback(null, output);
       return;
     }
     
-    array.forEach(function(item, i) {
-      function cont(err, result) {
-        counter--;
-        output[i] = result;
-        
-        if (notified) { return; }
-        
-        if (err) {
-          notified = true;
-          callback(err);
-        } else if (counter == 0) {
-          callback(null, output);
-        }
+    for (var i = 0, len = iterable.length; i < len; i++) {
+      if (i in iterable) {
+        (function(item, i) {
+          
+          function cont(err, result) {
+            counter--;
+            output[i] = result;
+
+            if (notified) { return; }
+
+            if (err) {
+              notified = true;
+              callback(err);
+            } else if (counter == 0) {
+              callback(null, output);
+            }
+          }
+          iterator.call(context, item, cont);
+        })(iterable[i], i);
       }
-      
-      iterator.call(context, item, cont);
-    });
+    }
   });
 }
 
 exports.every = every;
-function every(array, iterator, context, callback) {
-  var counter = array.length,
+function every(iterable, iterator, context, callback) {
+  var counter = iterable.length,
       notified = false;
 
   function cont(err, result) {
@@ -130,19 +140,21 @@ function every(array, iterator, context, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
+    if (!iterable.length) {
       callback(null, true);
     } else {
-      array.forEach(function(item) {
-        iterator.call(context, item, cont);
-      });
+      for (var i = 0, len = iterable.length; i < len; i++) {
+        if (i in iterable) {
+          iterator.call(context, iterable[i], cont);
+        }
+      }
     }
   });
 }
 
 exports.some = some;
-function some(array, iterator, context, callback) {
-  var counter = array.length,
+function some(iterable, iterator, context, callback) {
+  var counter = iterable.length,
       notified = false;
 
   function cont(err, result) {
@@ -167,21 +179,23 @@ function some(array, iterator, context, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
+    if (!iterable.length) {
       callback(null, false);
     } else {
-      array.forEach(function(item) {
-        iterator.call(context, item, cont);
-      });
+      for (var i = 0, len = iterable.length; i < len; i++) {
+        if (i in iterable) {
+          iterator.call(context, iterable[i], cont);
+        }
+      }
     }
   });
 }
 
 exports.filter = filter;
-function filter(array, iterator, context, callback) {
-  var counter = array.length,
+function filter(iterable, iterator, context, callback) {
+  var counter = iterable.length,
       notified = false,
-      clone = array.slice(0),
+      clone = _slice.call(iterable, 0),
       successIndexes = [],
       output = [];
   
@@ -191,37 +205,43 @@ function filter(array, iterator, context, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
+    if (!iterable.length) {
       callback(null, output);
       return;
     }
     
-    array.forEach(function(item, index) {
-      iterator.call(context, item, function(err, result) {
-        counter--;
-        if (result) { successIndexes.push(index); }
-        if (notified) { return; }
-        
-        if (err) {
-          notified = true;
-          callback(err);
-        } else if (counter == 0) {
-          successIndexes.sort(function(a, b) {
-            return a > b;
-          });
-          successIndexes.forEach(function(i) {
-            output.push(clone[i]);
-          });
-          callback(null, output);
-        }
-      });
-    });
+    for (var i = 0, len = iterable.length; i < len; i++) {
+      if (i in iterable) {
+        (function(item, i) {
+            function cont(err, result) {
+              counter--;
+              if (result) { successIndexes.push(i); }
+              if (notified) { return; }
+
+              if (err) {
+                notified = true;
+                callback(err);
+              } else if (counter == 0) {
+                successIndexes.sort(function(a, b) {
+                  return a > b;
+                });
+                successIndexes.forEach(function(i) {
+                  output.push(clone[i]);
+                });
+                callback(null, output);
+              }
+            }
+            
+            iterator.call(context, item, cont);
+        })(iterable[i], i);
+      }
+    }
   });
 }
 
 exports.reduce = reduce;
-function reduce(array, iterator, accumulator, callback) {
-  var counter = array.length,
+function reduce(iterable, iterator, accumulator, callback) {
+  var counter = iterable.length,
       notified = false;
 
   function cont(err, result) {
@@ -245,12 +265,14 @@ function reduce(array, iterator, accumulator, callback) {
   }
   
   process.nextTick(function() {
-    if (!array.length) {
+    if (!iterable.length) {
       callback(null, accumulator);
     } else {
-      array.forEach(function(item) {
-        iterator(accumulator, item, cont);
-      });
+     for (var i = 0, len = iterable.length; i < len; i++) {
+        if (i in iterable) {
+          iterator.call(context, iterable[i], cont);
+        }
+      }
     }
   });
 }
