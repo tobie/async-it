@@ -1,11 +1,17 @@
 async-it
 ========
 
-`async-it` is a series of **generic asynchronous iterators** for node.js. These iterators are
-based on the ES5 additions to `Array` (`forEach`, `map`, `filter`, `some`, `any`, and `reduce`).
-`reduceRight` is missing because of async `reduce`'s already unordered nature. Indexes are only
-available in the aptly-named `forEachWithIndex` as they are rarely used and would have crowded the
-callback's arguments.
+`async-it` is a series of **generic asynchronous iterators** for node.js.
+
+These iterators are based on the ES5 additions to `Array` (`forEach`, `map`,
+`filter`, `some`, `any`, and `reduce`). `reduceRight` is missing because of async
+`reduce`'s already unordered nature.
+
+Indexes are only passed to the callback in the aptly-named `forEachWithIndex` for fear of
+crowding the callback with little used arguments.
+
+Like their sync counterparts, these iterators work on any object which has a numeric
+length property.
 
 Usage
 -----
