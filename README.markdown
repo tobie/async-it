@@ -51,5 +51,5 @@ License
 
 Licensed under the [MIT license][1], Copyright 2010 Tobie Langel.
 
-[1]: http://github.com/tobie/ua-parser/raw/master/LICENSE
+[1]: http://github.com/tobie/async-it/raw/master/LICENSE
 
