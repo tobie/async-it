@@ -1,11 +1,12 @@
 async-it
 ========
 
-`async-it` is a series of **generic asynchronous iterators** for node.js.
+`async-it` is a series of **generic asynchronous parallel and serial iterators**
+for node.js.
 
 These iterators are based on the ES5 additions to `Array` (`forEach`, `map`,
-`filter`, `some`, `any`, and `reduce`). `reduceRight` is missing because of async
-`reduce`'s already unordered nature.
+`filter`, `some`, `any`, `reduce` and `reduceRight`). `reduce` and `reduceRight`
+are available in serial mode only.
 
 Indexes are only passed to the callback in the aptly-named `forEachWithIndex` for fear of
 crowding the callback with little used arguments.
@@ -20,7 +21,7 @@ See `examples/example.js`:
 
     var path = require('path'),
         fs = require('fs'),
-        asyncIt = require('async-it');
+        asyncItParallel = require('async-it/parallel');
 
     var files = ['foo.txt', 'bar.txt', 'does-not-exist.txt', 'baz.txt'];
     files = files.map(function(file) {
@@ -28,13 +29,13 @@ See `examples/example.js`:
     });
 
     // select existing files
-    asyncIt.filter(files, function(file, cont) {
+    asyncItParallel.filter(files, function(file, cont) {
       path.exists(file, function(exists) {
         cont(null, exists);
       });
     }, function(err, existingFiles) {
       // collect their content
-      asyncIt.map(existingFiles, function(file, cont) {
+      asyncItParallel.map(existingFiles, function(file, cont) {
         fs.readFile(file, 'utf8', cont);
       }, function(err, content) {
         // output the ordered content to the console

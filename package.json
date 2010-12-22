@@ -2,7 +2,11 @@
   "name": "async-it",
   "description": "Generic asynchronous iterators for node.js.",
   "main": "index.js",
-  "version": "0.1.0",
+  "modules": {
+    "parallel": "./lib/parallel",
+    "serial": "./lib/serial"
+  },
+  "version": "0.2.0",
   "author": "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
   "repository": {
     "type": "git",
