@@ -21,7 +21,7 @@ See `examples/example.js`:
 
     var path = require('path'),
         fs = require('fs'),
-        asyncItParallel = require('async-it/parallel');
+        asyncItParallel = require('async-it').parallel;
 
     var files = ['foo.txt', 'bar.txt', 'does-not-exist.txt', 'baz.txt'];
     files = files.map(function(file) {
