@@ -1,17 +1,22 @@
-{ 
+{
   "name": "async-it",
   "description": "Generic asynchronous iterators for node.js.",
   "main": "index.js",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Tobie Langel <tobie.langel@gmail.com> (http://tobielangel.com)",
   "repository": {
     "type": "git",
-    "url": "http://github.com/tobie/async-it.git"
+    "url": "git://github.com/tobie/async-it.git"
   },
   "licenses": [
     {
-      "type" : "MIT",
-      "url" : "http://github.com/tobie/async-it/raw/master/LICENSE"
+      "type": "MIT",
+      "url": "http://github.com/tobie/async-it/raw/master/LICENSE"
     }
-  ]
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": "*"
+  }
 }
