@@ -30,7 +30,7 @@ See `examples/example.js`:
 
     // select existing files
     asyncItParallel.filter(files, function(file, cont) {
-      path.exists(file, function(exists) {
+      fs.exists(file, function(exists) {
         cont(null, exists);
       });
     }, function(err, existingFiles) {
