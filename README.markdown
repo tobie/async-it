@@ -1,7 +1,7 @@
 async-it
 ========
 
-`async-it` is a series of **generic asynchronous parallel and serial iterators**
+`async-it` is a series of **generic asynchronous parallel** and **serial iterators**
 for node.js.
 
 These iterators are based on the ES5 additions to `Array` (`forEach`, `map`,
