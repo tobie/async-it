@@ -15,8 +15,13 @@
     }
   ],
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "*"
+  },
   "engines": {
     "node": "*"
+  },
+  "scripts": {
+    "test": "mocha -u tdd ./test/*.js"
   }
 }
